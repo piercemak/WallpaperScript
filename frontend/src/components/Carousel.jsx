@@ -57,7 +57,10 @@ const Carousel = () => {
             style={{ backgroundColor: bgColor }}
             className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center z-50"
             layoutId={`overlay-${selectedImage.index}`}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
             onClick={() => setSelectedImage(null)}
           >
 
