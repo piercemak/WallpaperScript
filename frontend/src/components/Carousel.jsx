@@ -14,6 +14,8 @@ const Carousel = () => {
   const [bgColor, setBgColor] = useState('rgba(0,0,0,0.8)');
   const imageRef = useRef();
   const chevronRight = <motion.svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4" whileTap={{ scale: 1.05, transition: { type: "spring", stiffness: 400 } }} whileHover={{ scale: 1.5, transition: { type: "spring", stiffness: 400 } }} cursor="pointer" onClick={(e) => {e.stopPropagation(); setSelectedImage({ src: nextImage, index: (selectedImage.index + 1) % images.length });}}><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></motion.svg>
+  const [footerVisible, setFooterVisible] = useState(true);
+
 
   useEffect(() => {
     fetch('http://localhost:8000/api/wallpapers/') 
@@ -82,15 +84,15 @@ const Carousel = () => {
             
 
             <motion.div
-                className="flex fixed w-full top-0 z-99 h-[100px]"
+                className="flex fixed w-full top-0 z-99"
                 onClick={(e) => {
                     e.stopPropagation(); // prevent closing overlay
                     }}
                 transition={{ delay: .05, duration: 0.6 }} 
             >
             
-                <div className='flex w-full justify-between'>
-                    <CircleGrid/>
+                <div className='flex w-full justify-between items-center p-8 h-[75px]'>
+                    <CircleGrid imageColor={bgColor} wallpapers={images} onToggleOpen={(isOpen) => setFooterVisible(!isOpen)}/>
                     <div className='text-[#eef0f1] text-[25px] text-shadow-lg tracking-wide z-53'>
                         {selectedImage && getCleanImageName(selectedImage.src)}
                     </div>
@@ -183,11 +185,18 @@ const Carousel = () => {
             )}  
         </div>          
 
-            <div className='w-full absolute flex items-end h-dvh justify-between text-[#eef0f1] tracking-wide text-[14px] font-extralight px-48 pb-10'>
+            <motion.div 
+                className='w-full absolute flex items-end h-dvh justify-between text-[#eef0f1] tracking-wide text-[14px] font-extralight px-48 pb-10'
+                animate={{
+                    y: footerVisible ? 0 : 100, 
+                    opacity: footerVisible ? 1 : 0
+                  }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+            >
                 <div> Pierce Makombe </div>
                 <div> Photo by NASA</div>
                 <div> Tagline... </div>
-            </div>
+            </motion.div>
 
           </motion.div>
         )}

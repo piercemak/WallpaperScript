@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 const Search = ({ size = 25, color = "#eef0f1" }) => {
   return (
     <svg
+    className='z-63'
       width={size}
       height={size}
       viewBox="0 0 24 24"
