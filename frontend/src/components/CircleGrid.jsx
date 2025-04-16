@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import styles from './modules/scrollSnapping.module.css'
 
 const GRID_SIZE = 3;
 const SPACING = 10;
@@ -13,6 +14,7 @@ const CircleGrid = ({imageColor, wallpapers, onToggleOpen}) => {
       return next;
     });
   };
+
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const hiddenOnClick = new Set(["0-1", "2-1", "1-0", "1-2"]);
@@ -25,13 +27,7 @@ const CircleGrid = ({imageColor, wallpapers, onToggleOpen}) => {
     (page + 1) * ITEMS_PER_PAGE
   );
 
-  const toggleOpenFoot = () => {
-    setOpen((prev) => {
-      const next = !prev;
-      if (onToggleOpen) onToggleOpen(next);
-      return next;
-    });
-  };
+
 
   const darkenColor = (rgbString, factor = 0.8) => {
     const match = rgbString.match(/\d+/g);
@@ -116,15 +112,7 @@ const CircleGrid = ({imageColor, wallpapers, onToggleOpen}) => {
                 </div>
                 <motion.div 
                   className='w-full flex h-full'
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  onDragEnd={(event, info) => {
-                    if (info.offset.x < -100 && page < totalPages - 1) {
-                      setPage((p) => p + 1);
-                    } else if (info.offset.x > 100 && page > 0) {
-                      setPage((p) => p - 1);
-                    }
-                  }}
+
                 >
                     <div className='w-full grid grid-cols-7 gap-4 '>   
                         {currentItems.map((img, i) => (
@@ -132,6 +120,7 @@ const CircleGrid = ({imageColor, wallpapers, onToggleOpen}) => {
                             <img
                               key={i}
                               src={img}
+                              loading="lazy"
                               alt={`Wallpaper ${i}`}
                               className="size-[80px] aspect-square object-cover rounded-md hover:scale-105 transition-transform duration-300"
                             />
