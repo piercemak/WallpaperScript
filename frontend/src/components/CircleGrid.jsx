@@ -1,10 +1,13 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const GRID_SIZE = 3;
 const SPACING = 10;
 
 const CircleGrid = () => {
+  const [open, setOpen] = useState(false);
+  const toggleOpen = () => setOpen(prev => !prev);
+  const [isHovered, setIsHovered] = useState(false);
   const circles = [];
 
   for (let row = 0; row < GRID_SIZE; row++) {
@@ -19,9 +22,12 @@ const CircleGrid = () => {
           cx={cx}
           cy={cy}
           r={1.5}
-          fill="#eef0f1"
+          fill={isHovered ? "#b1b5b6" : "#eef0f1"} // change color on hover
           initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1.5, opacity: 1 }}
+          animate={{
+            scale: isHovered ? 2.2 : 1.5,            // pulse on hover
+            opacity: 1,
+          }}
           transition={{
             delay,
             duration: 0.2,
@@ -35,9 +41,32 @@ const CircleGrid = () => {
   }
 
   return (
-    <svg width="80" height="80">
-      {circles}
-    </svg>
+    <div>
+        <svg
+          onClick={toggleOpen}
+          className='fixed z-51 top-0 cursor-pointer'
+    
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {circles}
+        </svg>
+
+
+        <AnimatePresence>
+          {open && (
+            <motion.div
+            className="fixed inset-0 z-50 bg-[#111] m-8 flex justify-center items-center rounded-2xl"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            >
+
+            </motion.div>
+          )}
+        </AnimatePresence>
+    </div>
   );
 };
 

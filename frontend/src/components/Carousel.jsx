@@ -7,13 +7,13 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
 
 
+
 const Carousel = () => {
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null); 
   const [bgColor, setBgColor] = useState('rgba(0,0,0,0.8)');
   const imageRef = useRef();
-
-
+  const chevronRight = <motion.svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4" whileTap={{ scale: 1.05, transition: { type: "spring", stiffness: 400 } }} whileHover={{ scale: 1.5, transition: { type: "spring", stiffness: 400 } }} cursor="pointer" onClick={(e) => {e.stopPropagation(); setSelectedImage({ src: nextImage, index: (selectedImage.index + 1) % images.length });}}><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></motion.svg>
 
   useEffect(() => {
     fetch('http://localhost:8000/api/wallpapers/') 
@@ -21,6 +21,21 @@ const Carousel = () => {
       .then(setImages)
       .catch(console.error);
   }, []);
+
+  const getCleanImageName = (src) => {
+    if (!src) return "";
+    const filename = src.split('/').pop().replace(/\.[^/.]+$/, ''); 
+    let cleaned = filename.replace(/_/g, ' ');
+    cleaned = cleaned.replace(/([a-zA-Z])([0-9]+)/g, '$1 $2');  
+    cleaned = cleaned.replace(/([a-z])([A-Z])/g, '$1 $2');      
+  
+    return cleaned.replace(/\s+/g, ' ').trim();
+  };
+
+  const nextImage =
+  selectedImage?.index + 1 < images.length
+    ? images[selectedImage.index + 1]
+    : images[0]; // loop to start
 
 
   return (
@@ -55,7 +70,7 @@ const Carousel = () => {
         {selectedImage && (
           <motion.div
             style={{ backgroundColor: bgColor }}
-            className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center z-50"
+            className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center z-50 shadow-[inset_0_-20px_20px_-10px_rgba(0,0,0,0.5)]"
             layoutId={`overlay-${selectedImage.index}`}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -64,22 +79,24 @@ const Carousel = () => {
             onClick={() => setSelectedImage(null)}
           >
 
+            
+
             <motion.div
-                className="flex absolute w-full top-0"
+                className="flex fixed w-full top-0 z-99 h-[100px]"
+                onClick={(e) => {
+                    e.stopPropagation(); // prevent closing overlay
+                    }}
                 transition={{ delay: .05, duration: 0.6 }} 
             >
-                <div className='flex w-full items-center justify-between px-[100px]'>
-                    <div className=''>
-                        <CircleGrid />
+            
+                <div className='flex w-full justify-between'>
+                    <CircleGrid/>
+                    <div className='text-[#eef0f1] text-[25px] text-shadow-lg tracking-wide z-53'>
+                        {selectedImage && getCleanImageName(selectedImage.src)}
                     </div>
-                    <div className=''>
-                        <CircleGrid />
-                    </div>
-                    <div className=''>
-                        <Search />
-                    </div>
-                   
+                    <Search/>
                 </div>
+                
             </motion.div>
 
             <motion.img
@@ -87,7 +104,7 @@ const Carousel = () => {
                 src={selectedImage.src}
                 alt="fullscreen"
                 layoutId={`image-${selectedImage.index}`}
-                className="max-w-[80vw] max-h-[80vh] mt-4 object-contain rounded-lg shadow-lg"
+                className="max-w-[80vw] max-h-[80vh] mt-4 object-contain rounded-lg shadow-lg z-5"
                 crossOrigin="anonymous"
                 transition={{
                     duration: 0.9,
@@ -126,6 +143,52 @@ const Carousel = () => {
                     }
                   }}
             />
+
+        <div className='w-full flex h-dvh absolute justify-end items-center z-9'>
+            <div 
+                className='bg-white w-[350px] h-[275px] cursor-pointer'
+                onClick={(e) => {
+                    e.stopPropagation(); 
+                    setSelectedImage({ src: nextImage, index: (selectedImage.index + 1) % images.length });
+                    }}
+            >
+                <div className='w-[225px] justify-start items-center flex h-[275px] p-8'>
+                    <div className='flex flex-col'>
+                        <span className='mb-14 font-extralight'> Up Next </span>
+                        <span className='mb-14 font-bold'> {selectedImage && getCleanImageName(images[(selectedImage.index + 1) % images.length])} </span>
+                        <span> {chevronRight} </span>
+                    </div>
+                </div>
+                  
+            </div>
+            {nextImage && (
+            <motion.img
+                src={nextImage}
+                alt="Next wallpaper preview"
+                className="absolute flex justify-end w-[125px] h-[275px] object-cover hover:opacity-100 transition-all z-8 cursor-pointer rounded-l-md"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                onClick={(e) => {
+                e.stopPropagation(); // prevent closing overlay
+                setSelectedImage({ src: nextImage, index: (selectedImage.index + 1) % images.length });
+                }}
+                whileHover={{  
+                    width:200, 
+                    transition: { duration: 0.1},
+                    borderTopLeftRadius: "6px",
+                    borderBottomLeftRadius: "6px",
+                }}
+            />
+            )}  
+        </div>          
+
+            <div className='w-full absolute flex items-end h-dvh justify-between text-[#eef0f1] tracking-wide text-[14px] font-extralight px-48 pb-10'>
+                <div> Pierce Makombe </div>
+                <div> Photo by NASA</div>
+                <div> Tagline... </div>
+            </div>
+
           </motion.div>
         )}
       </AnimatePresence>
