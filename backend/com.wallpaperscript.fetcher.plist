@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.wallpaperscript.fetcher</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/Users/faraimakombe/Desktop/PROJECTS/wallpaperscript/backend/venv/bin/python</string>
+      <string>/Users/faraimakombe/Desktop/PROJECTS/wallpaperscript/backend/fetch_wallpapers.py</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/faraimakombe/Desktop/PROJECTS/wallpaperscript/backend</string>
+
+    <key>StartInterval</key>
+    <integer>1800</integer> <!-- every 30 minutes -->
+
+    <key>StandardOutPath</key>
+    <string>/tmp/wallpaperscript.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/wallpaperscript.err</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+  </dict>
+</plist>

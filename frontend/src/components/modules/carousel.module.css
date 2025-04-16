@@ -1,0 +1,112 @@
+@layer base, demo;
+@import url(https://fonts.bunny.net/css?family=abel:400);
+
+@layer demo {
+	.carousel {
+		--carousel-width: 100vw;
+		--carousel-item-width: 280px;
+		--carousel-item-height: 450px;
+		--carousel-item-gap: 2rem;
+
+		--clr-cta: rgb(0, 132, 209);
+
+		position: relative;
+		width: var(--carousel-width);
+		height: var(--carousel-item-height);
+		overflow: visible;
+
+		&[mask] {
+			/* fade out on sides */
+			mask-image: linear-gradient(
+				to right,
+				transparent,
+				black 10% 90%,
+				transparent
+			);
+		}
+
+		&[reverse] > article {
+			animation-direction: reverse;
+		}
+		/* hover pauses animation */
+		&:hover > article {
+			animation-play-state: paused;
+		}
+	}
+	.carousel > article {
+		position: absolute;
+		top: 0;
+		left: calc(100% + var(--carousel-item-gap));
+		width: var(--carousel-item-width);
+        height: var(--carousel-item-height);
+		display: grid;
+		grid-template-rows: 200px auto 1fr auto;
+		border-radius: 10px;
+		color: light-dark(rgb(49, 65, 88), white);
+
+		/* animation */
+		will-change: transform;
+		animation-name: marquee;
+		animation-duration: var(--carousel-duration);
+		animation-timing-function: linear;
+		animation-iteration-count: infinite;
+		animation-delay: calc(
+			var(--carousel-duration) / var(--items) * 1 * var(--i) * -1
+		);
+	}
+	.carousel img {
+		width: 100%;
+        height: var(--carousel-item-height);
+		object-fit: cover;
+
+		border-radius: 10px;
+	}
+	.carousel > article > *:not(img) {
+		padding: 0 1rem;
+	}
+	.carousel > article > div {
+		grid-row: span 2;
+		display: grid;
+		grid-template-rows: subgrid;
+		font-size: 0.8rem;
+	}
+	.carousel > article h2 {
+		font-size: 1.2rem;
+		font-weight: 300;
+		padding-block: 0.75rem 0.25rem;
+		margin: 0;
+	}
+	.carousel > article p {
+		margin: 0;
+	}
+	.carousel > article a {
+		text-decoration: none;
+		text-transform: lowercase;
+		border: 1px solid var(--clr-cta);
+		color: light-dark(var(--clr-cta), white);
+		border-radius: 3px;
+		padding: 0.25rem 0.5rem;
+		place-self: start;
+		transition: 150ms ease-in-out;
+		&:hover,
+		&:focus-visible {
+			background-color: var(--clr-cta);
+			color: white;
+			outline: none;
+		}
+	}
+    .carousel[reverse] > article {
+        animation-direction: reverse;
+    }
+
+	@keyframes marquee {
+		100% {
+			transform: translateX(
+				calc(
+					(var(--items) * (var(--carousel-item-width) + var(--carousel-item-gap))) *
+						-1
+				)
+			);
+		}
+	}
+}
