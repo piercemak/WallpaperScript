@@ -1,32 +1,33 @@
-.scrollSnapContainer {
+@layer base, rhythm, layout, components, default, overwrites;
+
+html {
     scroll-snap-type: y mandatory;
-    overflow-y: scroll; /* required for snapping */
-    height: 100%; /* or whatever height your scroll section needs */
-  }
-
-  .snapChild {
-    scroll-snap-align: start;
+    timeline-scope: --section, --main, --site-header;
+    
   }
 
 
-  .snapMain {
+
+
+  main {
     view-timeline: --main;
   }
   
 
-  .snapSection {
+  .section {
     /* Creating a snapping rule on the section element */
     scroll-snap-align: start;
     scroll-snap-stop: always;
+    
   
     /* Attach the timeline to the section element*/
     view-timeline: --section;
   
     /* Set each section to the full dynamic height of the viewport */
-    height: 100dvh;
+
   }
   
-  .snapContent {
+  .content {
     /* Fix the content, so it doesn't scroll with the section */
     overflow: hidden;
     position: fixed;

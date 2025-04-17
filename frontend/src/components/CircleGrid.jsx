@@ -20,7 +20,7 @@ const CircleGrid = ({imageColor, wallpapers, onToggleOpen}) => {
   const hiddenOnClick = new Set(["0-1", "2-1", "1-0", "1-2"]);
 
   const [page, setPage] = useState(0);
-  const ITEMS_PER_PAGE = 35;
+  const ITEMS_PER_PAGE = 12;
   const totalPages = Math.ceil(wallpapers.length / ITEMS_PER_PAGE);
   const currentItems = wallpapers.slice(
     page * ITEMS_PER_PAGE,
@@ -99,6 +99,7 @@ const CircleGrid = ({imageColor, wallpapers, onToggleOpen}) => {
 
         <AnimatePresence>
           {open && (
+            <main>
             <motion.div
             className="fixed inset-0 z-50 backdrop-blur-lg bg-white/10 shadow-lg m-14 flex justify-center items-center rounded-2xl overflow-hidden"
             initial={{ scale: 0.8, opacity: 0 }}
@@ -110,10 +111,11 @@ const CircleGrid = ({imageColor, wallpapers, onToggleOpen}) => {
                 <div className='w-full flex justify-center items-start'>
                   testing
                 </div>
+                {/* 
                 <motion.div 
                   className='w-full flex h-full'
-
                 >
+                    
                     <div className='w-full grid grid-cols-7 gap-4 '>   
                         {currentItems.map((img, i) => (
                           <div className='flex justify-center items-center'>
@@ -127,20 +129,35 @@ const CircleGrid = ({imageColor, wallpapers, onToggleOpen}) => {
                           </div>
                         ))}
                     </div>
+                  
                 </motion.div>
-                <div className="flex w-full justify-center mb-4 gap-2">
-                  {Array.from({ length: totalPages }).map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setPage(idx)}
-                      className={`w-2 h-2 rounded-full ${
-                        idx === page ? 'bg-white' : 'bg-white/40'
-                      }`}
-                    />
-                  ))}
-                </div>
+                */}
+              <div className="w-full h-full overflow-x-auto scroll-smooth snap-x snap-mandatory whitespace-nowrap">
+                {/* Main scrollable wrapper with snapping */}
+                {Array.from({ length: totalPages }).map((_, pageIndex) => (
+                  <section
+                    key={pageIndex}
+                    className={`${styles.section} inline-block h-full w-full`}
+                  >
+                    <div className="grid [grid-template-columns:repeat(5,minmax(150px,1fr))] grid-rows-3 gap-2 w-full h-full ">
+                      {wallpapers
+                        .slice(pageIndex * ITEMS_PER_PAGE, (pageIndex + 1) * ITEMS_PER_PAGE)
+                        .map((img, i) => (
+                          <div key={i} className="flex justify-center items-center">
+                            <img
+                              src={img}
+                              alt={`Wallpaper ${i}`}
+                              className="aspect-square object-cover rounded-md hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
               </div>
             </motion.div>
+            </main>
           )}
         </AnimatePresence>
     </div>
